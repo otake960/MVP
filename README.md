@@ -46,7 +46,6 @@ MVP
 つけた記録のグラフ化機能
 インターバルのタイマー機能
 
-
 ■ 機能の実装方針予定
 開発環境    Docker
 フロントエンド Bootstrap,TailwindCSS
