@@ -54,3 +54,4 @@ MVP
 データベース  PostgreSQL
 インフラ    Render
 API Devise,Pundit,Ransack,Kaminari
+
