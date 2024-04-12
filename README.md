@@ -49,7 +49,7 @@ MVP
 
 ■ 機能の実装方針予定
 開発環境    Docker
-フロントエンド Bootstrap,TailwindCSS
+フロントエンド Bootstrap
 バックエンド  Ruby 3.2.2, Ruby on Rails 7系
 データベース  PostgreSQL
 インフラ    Render
