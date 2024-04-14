@@ -7,6 +7,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
+      POSTGRES_DB: myapp_development  # 追加: 明示的にデータベース名を設定
     ports:
       - "5432:5432"
 
@@ -22,6 +23,7 @@ services:
     stdin_open: true
     tty: true
     environment:
+      DATABASE_URL: postgresql://postgres:password@db/myapp_development  # 追加: 環境変数にデータベースURLを設定
       SELENIUM_DRIVER_URL: http://chrome:4444/wd/hub
       RAILS_ENV: development
       NODE_ENV: development
