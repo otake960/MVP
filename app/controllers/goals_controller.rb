@@ -1,18 +1,15 @@
 class GoalsController < ApplicationController
-    before_action :authenticate_user!  # ユーザーがログインしているか確認
-    before_action :set_goal, only: [:edit, :update]
+    before_action :set_goal, only: [:show, :edit, :update, :destroy]
   
     def new
       @goal = Goal.new
-    end
-  
-    def edit
+      3.times { @goal.goal_exercises.build.build_exercise }
     end
   
     def create
-      @goal = current_user.goals.build(goal_params)
+      @goal = current_user.goals.new(goal_params)
       if @goal.save
-        redirect_to dashboard_path, notice: '目標が正常に作成されました。'
+        redirect_to @goal, notice: 'Goal was successfully created.'
       else
         render :new
       end
@@ -20,7 +17,7 @@ class GoalsController < ApplicationController
   
     def update
       if @goal.update(goal_params)
-        redirect_to dashboard_path, notice: '目標が正常に更新されました。'
+        redirect_to @goal, notice: 'Goal was successfully updated.'
       else
         render :edit
       end
@@ -29,11 +26,11 @@ class GoalsController < ApplicationController
     private
   
     def set_goal
-      @goal = current_user.goals.find_by(id: params[:id])
-      redirect_to dashboard_path, alert: '指定された目標が見つかりません。' if @goal.nil?
+      @goal = Goal.find(params[:id])
     end
   
     def goal_params
-      params.require(:goal).permit(:target_value, :description)
+      params.require(:goal).permit(:description, :start_date, :end_date, :status,
+                                   goal_exercises_attributes: [:id, :exercise_id, :target_weight, :repetitions, :_destroy])
     end
   end
