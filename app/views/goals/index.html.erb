@@ -1,0 +1,8 @@
+<h1>Your Goals</h1>
+<% @goals.each do |goal| %>
+  <p>
+    <strong>Description:</strong>
+    <%= goal.description %>
+    <%= link_to 'View', goal_path(goal) %>
+  </p>
+<% end %>

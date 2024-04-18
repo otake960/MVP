@@ -1,24 +1,9 @@
 <%= form_with(model: @goal, local: true) do |form| %>
-  <% if @goal.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@goal.errors.count, "error") %> prohibited this goal from being saved:</h2>
-      <ul>
-        <% @goal.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-      </ul>
-    </div>
+  <%= form.fields_for :goal_exercises do |ge_form| %>
+    <%= ge_form.label :exercise_id, "Exercise" %>
+    <%= ge_form.collection_select :exercise_id, Exercise.all, :id, :name, include_blank: true %>
+    <%= ge_form.number_field :target_weight, step: 0.1, placeholder: "Target Weight" %>
+    <%= ge_form.number_field :repetitions, placeholder: "Repetitions" %>
   <% end %>
-
-  <div class="field">
-    <%= form.label :target_value, "目標値" %>
-    <%= form.number_field :target_value, step: 0.1 %>
-  </div>
-  <div class="field">
-    <%= form.label :description, "説明" %>
-    <%= form.text_field :description %>
-  </div>
-  <div class="actions">
-    <%= form.submit "保存" %>
-  </div>
+  <%= form.submit "Save" %>
 <% end %>

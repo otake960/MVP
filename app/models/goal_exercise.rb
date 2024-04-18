@@ -1,7 +1,6 @@
 class GoalExercise < ApplicationRecord
   belongs_to :goal
   belongs_to :exercise
-
-  attribute :target_weight, :decimal
-  attribute :repetitions, :integer
+  validates :target_weight, presence: true, numericality: true
+  validates :repetitions, presence: true, numericality: { only_integer: true }
 end

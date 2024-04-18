@@ -1,24 +1,59 @@
-<%= form_with(model: @goal, local: true) do |form| %>
-  <% if @goal.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@goal.errors.count, "error") %> prohibited this goal from being saved:</h2>
-      <ul>
-        <% @goal.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
+<%= form_with(model: @goal, local: true, id: "goal_form") do |form| %>
+  <div id="exercises_container">
+    <% 5.times do |index| %>
+      <div class="exercise_row">
+        <%= form.fields_for :goal_exercises, @goal.goal_exercises.build, index: index do |ge| %>
+          <%= ge.fields_for :exercise, Exercise.new do |exe| %>
+            <div class="field">
+              <%= exe.label :name, "種目 #{index + 1}" %>
+              <%= exe.text_field :name %>
+            </div>
+          <% end %>
+          <div class="field">
+            <%= ge.label :target_weight, "目標重量 (kg)" %>
+            <%= ge.number_field :target_weight, step: 0.1 %>
+          </div>
+          <div class="field">
+            <%= ge.label :repetitions, "目標回数 (回)" %>
+            <%= ge.number_field :repetitions %>
+          </div>
         <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div class="field">
-    <%= form.label :target_value, "目標値" %>
-    <%= form.number_field :target_value, step: 0.1 %>
+      </div>
+    <% end %>
   </div>
-  <div class="field">
-    <%= form.label :description, "説明" %>
-    <%= form.text_field :description %>
-  </div>
-  <div class="actions">
-    <%= form.submit "保存" %>
-  </div>
+  <button type="button" onclick="addExerciseRow()">さらに追加</button>
+  <%= form.submit "保存" %>
 <% end %>
+
+<script>
+  function addExerciseRow() {
+    const container = document.getElementById('exercises_container');
+    const newRowIndex = container.children.length;
+    const newRow = container.children[0].cloneNode(true);
+
+    // Update labels and inputs for the new row
+    newRow.querySelectorAll('label, input').forEach(element => {
+      const labelFor = element.getAttribute('for');
+      if (labelFor) {
+        element.setAttribute('for', labelFor.replace(/\d+$/, newRowIndex + 1));
+      }
+      const labelText = element.textContent;
+      if (labelText && labelText.startsWith('種目')) {
+        element.textContent = `種目 ${newRowIndex + 1}`;
+      }
+      const id = element.id;
+      if (id) {
+        element.id = id.replace(/\d+$/, newRowIndex + 1);
+      }
+      const name = element.name;
+      if (name) {
+        element.name = name.replace(/\[\d+\]/, `[${newRowIndex}]`);
+      }
+      if (element.type === 'number') {
+        element.value = ''; // Reset number input values
+      }
+    });
+
+    container.appendChild(newRow);
+  }
+</script>
