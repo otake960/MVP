@@ -7,17 +7,25 @@ class GoalsController < ApplicationController
     end
   
     def new
-      @goal = Goal.new
-      3.times { @goal.goal_exercises.build.build_exercise }
+        @goal = Goal.new
+        @goal.goal_exercises.build.build_exercise
     end
   
     def create
-        @goal = current_user.goals.new(goal_params)
+        @goal = Goal.new(goal_params)
         if @goal.save
-            redirect_to @goal, notice: 'Goal was successfully created.'
+          redirect_to goals_path, notice: '目標が正しく保存されました。'  # ここでリダイレクト
         else
-            render :new
+          render :new, status: :unprocessable_entity
         end
+    end
+
+    def show
+        # Logic to show a single goal
+    end
+
+    def edit
+        # Logic to edit an existing goal
     end
 
     def update
@@ -28,14 +36,18 @@ class GoalsController < ApplicationController
         end
     end
 
-    private
-  
-    def set_goal
-        @goal = current_user.goals.find(params[:id])
+    def destroy
+        @goal.destroy
+        redirect_to goals_path, notice: 'Goal was successfully destroyed.'
     end
-  
+
+    private
+
+    def set_goal
+        @goal = Goal.find(params[:id])
+    end
+
     def goal_params
-        params.require(:goal).permit(:description, :start_date, :end_date, :status,
-                                     goal_exercises_attributes: [:id, :exercise_id, :target_weight, :repetitions, :_destroy])
+        params.require(:goal).permit(:start_date, :end_date, goal_exercises_attributes: [:id, :name, :target_weight, :repetitions])
     end
 end

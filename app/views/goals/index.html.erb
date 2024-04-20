@@ -1,8 +1,15 @@
-<h1>Your Goals</h1>
+<h1>目標一覧</h1>
 <% @goals.each do |goal| %>
-  <p>
-    <strong>Description:</strong>
-    <%= goal.description %>
-    <%= link_to 'View', goal_path(goal) %>
-  </p>
+  <div>
+    <% if goal.exercises.any? %>
+      <ul>
+        <% goal.exercises.each do |exercise| %>
+          <li><%= exercise.name %></li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p>この目標には運動が関連付けられていません。</p>
+    <% end %>
+    <%= link_to '詳細を見る', goal_path(goal), class: "btn btn-primary" %>
+  </div>
 <% end %>

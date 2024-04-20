@@ -1,9 +1,33 @@
-<%= form_with(model: @goal, local: true) do |form| %>
-  <%= form.fields_for :goal_exercises do |ge_form| %>
-    <%= ge_form.label :exercise_id, "Exercise" %>
-    <%= ge_form.collection_select :exercise_id, Exercise.all, :id, :name, include_blank: true %>
-    <%= ge_form.number_field :target_weight, step: 0.1, placeholder: "Target Weight" %>
-    <%= ge_form.number_field :repetitions, placeholder: "Repetitions" %>
-  <% end %>
-  <%= form.submit "Save" %>
+<%= form_with(model: @goal, local: true, id: "goal_form", data: { turbo: false }) do |form| %>
+ <div class="field">
+    <%= form.label :start_date %>
+    <%= form.date_select :start_date %>
+  </div>
+
+  <div class="field">
+    <%= form.label :end_date %>
+    <%= form.date_select :end_date %>
+  </div>
+
+  <div id="exercises_container">
+    <div class="exercise_row">
+      <%= form.fields_for :goal_exercises, @goal.goal_exercises.build, index: 0 do |ge| %>
+        <%= ge.fields_for :exercise, Exercise.new do |exe| %>
+          <div class="field">
+            <%= exe.label :name, "種目 1" %>
+            <%= exe.text_field :name %>
+          </div>
+        <% end %>
+        <div class="field">
+          <%= ge.label :target_weight, "目標重量 (kg)" %>
+          <%= ge.number_field :target_weight, step: 0.1 %>
+        </div>
+        <div class="field">
+          <%= ge.label :repetitions, "目標回数 (回)" %>
+          <%= ge.number_field :repetitions %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+  <%= form.submit "保存", class: "btn btn-primary" %>
 <% end %>
