@@ -1,0 +1,31 @@
+<h1>Session Exercises</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Session ID</th>
+      <th>Exercise ID</th>
+      <th>Weight</th>
+      <th>Sets</th>
+      <th>Reps</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @session_exercises.each do |session_exercise| %>
+      <tr>
+        <td><%= session_exercise.id %></td>
+        <td><%= session_exercise.session_id %></td>
+        <td><%= session_exercise.exercise_id %></td>
+        <td><%= session_exercise.weight %></td>
+        <td><%= session_exercise.sets %></td>
+        <td><%= session_exercise.reps %></td>
+        <td>
+          <%= link_to 'Edit', edit_session_exercise_path(session_exercise) %>
+          <%= link_to 'Delete', session_exercise, method: :delete, data: { confirm: 'Are you sure?' } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

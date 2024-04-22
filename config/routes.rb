@@ -7,5 +7,6 @@ Rails.application.routes.draw do
   # root "articles#index"
   get '/dashboard', to: 'dashboard#index', as: 'dashboard'
   resources :goals
+  resources :session_exercises
+  resources :training_sessions
 end
-1
