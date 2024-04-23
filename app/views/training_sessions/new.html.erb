@@ -1,0 +1,47 @@
+<h1>トレーニング記録</h1>
+
+<%= form_with(model: @training_session, local: true, html: {id: 'training-session-form'}) do |form| %>
+  <% if @training_session.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@training_session.errors.count, "error") %> このトレーニングセッションの保存を妨げました:</h2>
+      <ul>
+        <% @training_session.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :date, "日付" %>
+    <%= form.date_field :date %>
+  </div>
+
+  <h3>エクササイズ</h3>
+  <div id="exercises-container">
+    <% 5.times do |i| %>
+      <div class="exercise-row">
+        <%= form.label :exercise, "種目 #{i + 1}" %>
+        <%= form.text_field :exercise, name: "training_session[exercises][][name]", placeholder: "種目名" %>
+        <%= form.label :weight, "重量" %>
+        <%= form.number_field :weight, name: "training_session[exercises][][weight]", placeholder: "重量(kg)" %>
+        <%= form.label :reps, "回数" %>
+        <%= form.number_field :reps, name: "training_session[exercises][][reps]", placeholder: "回数" %>
+      </div>
+    <% end %>
+  </div>
+
+  <div>
+    <button type="button" id="add-exercise">エクササイズを追加</button>
+  </div>
+
+  <div class="actions">
+    <%= form.submit "保存" %>
+  </div>
+<% end %>
+
+<%= link_to '戻る', training_sessions_path %>
+
+<script type="module">
+  import "/custom"
+</script>
