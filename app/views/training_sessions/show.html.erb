@@ -1,0 +1,17 @@
+<p><strong>日付:</strong> <%= @training_session.date %></p>
+
+<h2>エクササイズの記録</h2>
+<ul>
+  <% @training_session.session_exercises.each do |session_exercise| %>
+    <li>
+      <strong>種目:</strong> <%= session_exercise.exercise.name %><br>
+      <strong>重量:</strong> <%= session_exercise.weight %> kg<br>
+      <strong>回数:</strong> <%= session_exercise.reps %>回<br>
+      <strong>セット数:</strong> <%= session_exercise.sets %>セット
+    </li>
+  <% end %>
+</ul>
+
+<%= link_to '編集', edit_training_session_path(@training_session) %>
+<%= link_to '削除', training_session_path(@training_session), method: :delete, data: { confirm: '本当に削除しますか？' } %>
+<%= link_to '一覧に戻る', training_sessions_path %>

@@ -6,6 +6,7 @@ class TrainingSessionsController < ApplicationController
     end
   
     def show
+      @training_session = TrainingSession.includes(session_exercises: :exercise).find(params[:id])
     end
   
     def new
@@ -46,6 +47,6 @@ class TrainingSessionsController < ApplicationController
     end
   
     def training_session_params
-      params.require(:training_session).permit(:user_id, :date)
+      params.require(:training_session).permit(:user_id, :date, exercises_attributes: [:id, :exercise_id, :weight, :sets, :reps, :_destroy])
     end
   end

@@ -10,6 +10,7 @@ class SessionExercisesController < ApplicationController
   
     def new
       @session_exercise = SessionExercise.new
+      @exercises = Exercise.all
     end
   
     def create
