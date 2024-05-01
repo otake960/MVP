@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_04_21_105445) do
+ActiveRecord::Schema[7.0].define(version: 2024_04_30_185447) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -46,13 +46,15 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_21_105445) do
   end
 
   create_table "session_exercises", force: :cascade do |t|
-    t.integer "session_id"
-    t.integer "exercise_id"
+    t.bigint "session_id", null: false
+    t.bigint "exercise_id", null: false
     t.decimal "weight"
     t.integer "sets"
     t.integer "reps"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["exercise_id"], name: "index_session_exercises_on_exercise_id"
+    t.index ["session_id"], name: "index_session_exercises_on_session_id"
   end
 
   create_table "training_sessions", force: :cascade do |t|
@@ -78,4 +80,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_21_105445) do
   add_foreign_key "goal_exercises", "exercises"
   add_foreign_key "goal_exercises", "goals"
   add_foreign_key "goals", "users"
+  add_foreign_key "session_exercises", "exercises"
+  add_foreign_key "session_exercises", "training_sessions", column: "session_id"
 end

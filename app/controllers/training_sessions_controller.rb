@@ -11,12 +11,13 @@ class TrainingSessionsController < ApplicationController
   
     def new
       @training_session = TrainingSession.new
+      @training_session.session_exercises.build
     end
   
     def create
       @training_session = TrainingSession.new(training_session_params)
       if @training_session.save
-        redirect_to @training_session, notice: 'Training session was successfully created.'
+        redirect_to sessions_on_date_training_sessions_path(date: @training_session.date), notice: 'Training session was successfully created.'
       else
         render :new
       end
@@ -47,6 +48,14 @@ class TrainingSessionsController < ApplicationController
     end
   
     def training_session_params
-      params.require(:training_session).permit(:user_id, :date, exercises_attributes: [:id, :exercise_id, :weight, :sets, :reps, :_destroy])
+      params.require(:training_session).permit(:user_id, :date, session_exercises_attributes: [:id, :exercise_id, :weight, :sets, :reps, :_destroy])
+    end
+
+    def sessions_on_date
+      @date = params[:date]
+      @sessions = TrainingSession.where(date: @date)
+      unless @sessions.exists?
+        redirect_to training_sessions_path, alert: "No sessions found on this date."
+      end
     end
   end

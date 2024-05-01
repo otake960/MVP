@@ -1,0 +1,19 @@
+<h1>Training Sessions on <%= @date %></h1>
+
+<% @sessions.each do |session| %>
+  <p>
+    Session ID: <%= session.id %><br>
+    User: <%= session.user.name %> (ID: <%= session.user_id %>)<br>
+    Exercises: <%= session.session_exercises.count %>
+  </p>
+  <% session.session_exercises.each do |exercise| %>
+    <div>
+      <strong><%= exercise.exercise.name %></strong>:
+      Weight: <%= exercise.weight %> kg,
+      Reps: <%= exercise.reps %>,
+      Sets: <%= exercise.sets %>
+    </div>
+  <% end %>
+<% end %>
+
+<%= link_to 'Back to All Sessions', training_sessions_path %>
