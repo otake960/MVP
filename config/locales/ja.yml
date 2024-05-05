@@ -1,0 +1,26 @@
+ja:
+  activerecord:
+    models:
+      training_session: "トレーニングセッション"
+      session_exercise: "セッションエクササイズ"
+    attributes:
+      training_session:
+        date: "日付"
+      session_exercise:
+        weight: "重量"
+        reps: "回数"
+        sets: "セット数"
+    errors:
+      models:
+        training_session:
+          attributes:
+            date:
+              blank: "日付を入力してください。"
+        session_exercise:
+          attributes:
+            weight:
+              less_than_or_equal_to: "重量は0以上の数値を入力してください。"
+            reps:
+              less_than_or_equal_to: "回数は0以上の整数を入力してください。"
+            sets:
+              less_than_or_equal_to: "セット数は0以上の整数を入力してください。"

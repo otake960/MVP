@@ -1,6 +1,8 @@
 class SessionExercise < ApplicationRecord
-  belongs_to :training_session, foreign_key: "session_id"
+  belongs_to :training_session
   belongs_to :exercise
 
-  validates :weight, :sets, :reps, presence: true
+  validates :name, presence: true
+  validates :weight, numericality: { greater_than_or_equal_to: 0 }
+  validates :reps, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 end

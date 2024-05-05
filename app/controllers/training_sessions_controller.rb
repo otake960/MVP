@@ -48,7 +48,7 @@ class TrainingSessionsController < ApplicationController
     end
   
     def training_session_params
-      params.require(:training_session).permit(:user_id, :date, session_exercises_attributes: [:id, :exercise_id, :weight, :sets, :reps, :_destroy])
+      params.require(:training_session).permit(:date, session_exercises_attributes: [:name, :weight, :reps])
     end
 
     def sessions_on_date
