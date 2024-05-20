@@ -1,11 +1,11 @@
-<h1>Training Sessions</h1>
-<%= link_to 'New Training Session', new_training_session_path %>
+<h1>トレーニング履歴</h1>
+<%= link_to 'トレーニング記録', new_training_session_path %>
 <ul>
   <% @training_sessions.each do |session| %>
     <li>
       <%= link_to session.date, training_session_path(session) %>
-      <%= link_to 'Edit', edit_training_session_path(session) %>
-      <%= link_to 'Delete', training_session_path(session), method: :delete, data: { confirm: 'Are you sure?' } %>
+      <%= link_to '編集', edit_training_session_path(session) %>
+      <%= link_to '削除', training_session_path(session), method: :delete, data: { confirm: 'Are you sure?' } %>
     </li>
   <% end %>
 </ul>

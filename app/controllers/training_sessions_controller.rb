@@ -1,12 +1,13 @@
 class TrainingSessionsController < ApplicationController
     before_action :set_training_session, only: [:show, :edit, :update, :destroy]
+    before_action :authenticate_user!, only: [:create, :update, :delete] 
   
     def index
       @training_sessions = TrainingSession.all
     end
   
     def show
-      @training_session = TrainingSession.includes(session_exercises: :exercise).find(params[:id])
+      @training_session = TrainingSession.includes(:session_exercises).find(params[:id])
     end
   
     def new
@@ -15,10 +16,14 @@ class TrainingSessionsController < ApplicationController
     end
   
     def create
-      @training_session = TrainingSession.new(training_session_params)
+      puts "Current user: #{current_user.inspect}"  # 現在のユーザー情報をログに出力
+      @training_session = current_user.training_sessions.new(training_session_params)
+    
       if @training_session.save
-        redirect_to sessions_on_date_training_sessions_path(date: @training_session.date), notice: 'Training session was successfully created.'
+        redirect_to @training_session, notice: 'トレーニングセッションが正常に作成されました。'
       else
+        puts @training_session.errors.full_messages  # 保存に失敗した場合のエラーメッセージをログに出力
+        flash.now[:alert] = @training_session.errors.full_messages
         render :new
       end
     end
@@ -28,8 +33,10 @@ class TrainingSessionsController < ApplicationController
   
     def update
       if @training_session.update(training_session_params)
-        redirect_to @training_session, notice: 'Training session was successfully updated.'
+        redirect_to @training_session, notice: 'トレーニングセッションが正常に更新されました。'
       else
+        puts @training_session.errors.full_messages  # 更新に失敗した場合のエラーメッセージをログに出力
+        flash.now[:alert] = @training_session.errors.full_messages
         render :edit
       end
     end
@@ -48,7 +55,7 @@ class TrainingSessionsController < ApplicationController
     end
   
     def training_session_params
-      params.require(:training_session).permit(:date, session_exercises_attributes: [:name, :weight, :reps])
+      params.require(:training_session).permit(:date, session_exercises_attributes: [:id, :name, :weight, :reps, :_destroy])
     end
 
     def sessions_on_date
