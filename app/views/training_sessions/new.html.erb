@@ -30,4 +30,32 @@
   <% end %>
   <%= link_to '戻る', training_sessions_path %>
 
-<%= javascript_include_tag 'custom' %>
+<%= javascript_tag do %>
+document.addEventListener('turbo:load', function() {
+  const container = document.getElementById('exercises-container');
+  let index = <%= @training_session.session_exercises.size %>;
+  const exercises = <%= Exercise.all.collect { |e| [e.name, e.name] }.to_json.html_safe %>;
+
+  document.getElementById('add-exercise').addEventListener('click', function() {
+    let selectHTML = '<select name="training_session[session_exercises_attributes][' + index + '][name]" placeholder="種目を選択">';
+    selectHTML += '<option value="">種目を選択</option>';
+    exercises.forEach(function(exercise) {
+      selectHTML += '<option value="' + exercise[1] + '">' + exercise[0] + '</option>';
+    });
+    selectHTML += '</select>';
+
+    const newExerciseHTML = `
+      <div class="exercise-row" data-index="${index}">
+        <label>種目 ${index + 1}</label>
+        ` + selectHTML + `
+        <label>重量</label>
+        <input type="number" name="training_session[session_exercises_attributes][${index}][weight]" placeholder="重量(kg)">
+        <label>回数</label>
+        <input type="number" name="training_session[session_exercises_attributes][${index}][reps]" placeholder="回数">
+      </div>
+    `;
+    container.insertAdjacentHTML('beforeend', newExerciseHTML);
+    index++;
+  });
+});
+<% end %>

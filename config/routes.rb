@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   get '/dashboard', to: 'dashboard#index', as: 'dashboard'
   resources :users, only: :show
   resources :goals
-  resources :session_exercises
+  resources :session_exercises, only: [:create, :destroy]
   resources :training_sessions do
     collection do
       get 'sessions_on_date/:date', to: 'training_sessions#sessions_on_date', as: 'sessions_on_date'
