@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")
-  # root "articles#index"
+  root "dashboard#index"
   get '/dashboard', to: 'dashboard#index', as: 'dashboard'
   resources :users, only: :show
   resources :goals
@@ -15,7 +15,7 @@ Rails.application.routes.draw do
       get '/patients/:id', to: 'patients#show'
     end
     member do
-      post 'edit', to: 'training_sessions#update' # POSTリクエストをupdateアクションにルーティング
+      post 'edit', to: 'training_sessions#update' 
     end
   end
 end
