@@ -1,10 +1,14 @@
-require "active_support/core_ext/integer/time"
-
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
+  # 既存の設定...
+
   # 許可するホスト名を追加
   config.hosts << "morning-garden-33863-530dc8690c35.herokuapp.com"
+
+  # デバッグ用の設定を追加
+  config.consider_all_requests_local = true
+  config.action_dispatch.show_exceptions = false
 
   # Code is not reloaded between requests.
   config.cache_classes = true
