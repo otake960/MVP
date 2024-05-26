@@ -1,1 +1,85 @@
-<h1>FitTracker</h1>
+<h1>FitTracker Dashboard</h1>
+
+<div class="dashboard">
+
+  <div class="user-info">
+    <h2>Welcome, <%= current_user.name %>!</h2>
+    <p>Today's date: <%= Date.today.strftime('%Y-%m-%d') %></p>
+  </div>
+
+  <div class="new-session">
+    <h2>Add New Training Session</h2>
+    <%= form_with(model: @training_session, local: true) do |form| %>
+      <div class="field">
+        <%= form.label :exercise %>
+        <%= form.text_field :exercise %>
+      </div>
+      <div class="field">
+        <%= form.label :weight %>
+        <%= form.number_field :weight %>
+      </div>
+      <div class="field">
+        <%= form.label :reps %>
+        <%= form.number_field :reps %>
+      </div>
+      <div class="actions">
+        <%= form.submit 'Add Session' %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="training-records">
+    <h2>Your Training Records</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Exercise</th>
+          <th>Weight</th>
+          <th>Reps</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @training_sessions.each do |session| %>
+          <tr>
+            <td><%= session.created_at.strftime('%Y-%m-%d') %></td>
+            <td><%= session.exercise %></td>
+            <td><%= session.weight %></td>
+            <td><%= session.reps %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="statistics">
+    <h2>Your Progress</h2>
+    <p>Total sessions: <%= @training_sessions.count %></p>
+    <p>Total weight lifted: <%= @training_sessions.sum(:weight) %> kg</p>
+    <p>Average reps per session: <%= @training_sessions.average(:reps).to_f.round(2) %></p>
+  </div>
+</div>
+
+<style>
+  .dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .user-info, .new-session, .training-records, .statistics {
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 10px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  table, th, td {
+    border: 1px solid black;
+  }
+  th, td {
+    padding: 10px;
+    text-align: left;
+  }
+</style>
