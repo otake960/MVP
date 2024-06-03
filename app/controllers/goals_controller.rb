@@ -13,10 +13,12 @@ class GoalsController < ApplicationController
   
     def create
         @goal = Goal.new(goal_params)
+        logger.debug "Params: #{params.inspect}"
+        logger.debug "Goal Params: #{goal_params.inspect}"
         if @goal.save
-          redirect_to goals_path, notice: '目標が正しく保存されました。'  # ここでリダイレクト
+          redirect_to @goal, notice: 'Goal was successfully created.'
         else
-          render :new, status: :unprocessable_entity
+          render :new
         end
     end
 
