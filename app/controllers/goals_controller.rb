@@ -13,8 +13,6 @@ class GoalsController < ApplicationController
   
     def create
         @goal = Goal.new(goal_params)
-        logger.debug "Params: #{params.inspect}"
-        logger.debug "Goal Params: #{goal_params.inspect}"
         if @goal.save
           redirect_to @goal, notice: 'Goal was successfully created.'
         else
@@ -50,6 +48,6 @@ class GoalsController < ApplicationController
     end
 
     def goal_params
-        params.require(:goal).permit(:start_date, :end_date, goal_exercises_attributes: [:id, :name, :target_weight, :repetitions])
+        params.require(:goal).permit(:start_date, :end_date, goal_exercises_attributes: [:exercise_id, :target_weight, :repetitions])
     end
 end
