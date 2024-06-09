@@ -12,13 +12,13 @@ class GoalsController < ApplicationController
     end
   
     def create
-        @goal = Goal.new(goal_params)
+        @goal = current_user.goals.build(goal_params)
         if @goal.save
-          redirect_to @goal, notice: 'Goal was successfully created.'
+          redirect_to @goal, notice: I18n.t('goals.created_successfully')
         else
           render :new
         end
-    end
+    end    
 
     def show
         # Logic to show a single goal
@@ -29,17 +29,23 @@ class GoalsController < ApplicationController
     end
 
     def update
+        @goal = Goal.find(params[:id])
         if @goal.update(goal_params)
-            redirect_to @goal, notice: 'Goal was successfully updated.'
+          redirect_to @goal, notice: t('goals.updated_successfully')
         else
-            render :edit
+          render :edit
         end
     end
 
     def destroy
-        @goal.destroy
-        redirect_to goals_path, notice: 'Goal was successfully destroyed.'
+        @goal = Goal.find(params[:id])
+        if @goal.destroy
+          redirect_to goals_path, notice: I18n.t('goals.destroy_success')
+        else
+          redirect_to goals_path, alert: '目標の削除に失敗しました。'
+        end
     end
+      
 
     private
 
@@ -48,6 +54,6 @@ class GoalsController < ApplicationController
     end
 
     def goal_params
-        params.require(:goal).permit(:start_date, :end_date, goal_exercises_attributes: [:exercise_id, :target_weight, :repetitions])
-    end
+        params.require(:goal).permit(:start_date, :end_date, goal_exercises_attributes: [:id, :exercise_id, :target_weight, :repetitions, :_destroy])
+      end
 end
