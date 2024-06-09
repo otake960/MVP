@@ -1,11 +1,53 @@
-<%= form_with(model: @goal, local: true) do |form| %>
-  <%= form.fields_for :goal_exercises_attributes do |ge| %>
-    <%= ge.label :name, "種目名" %>
-    <%= ge.text_field :name, placeholder: '種目名を入力してください' %>
-    <%= ge.label :target_weight, "目標重量(kg)" %>
-    <%= ge.number_field :target_weight, step: 0.1, placeholder: '目標重量を入力' %>
-    <%= ge.label :repetitions, "回数" %>
-    <%= ge.number_field :repetitions, placeholder: '目標回数を入力' %>
-  <% end %>
-  <%= form.submit "保存する" %>
+<h1>目標設定</h1>
+
+<%= form_with(model: @goal, local: true, data: { turbo: false }, html: { id: 'goal-form' }) do |form| %>
+  <div id="goal-exercises-container">
+    <%= form.fields_for :goal_exercises do |ge| %>
+      <div class="goal-exercise-row">
+        <%= ge.label :exercise_id, "種目名" %>
+        <%= ge.collection_select :exercise_id, Exercise.all, :id, :name, prompt: "種目を選択してください" %>
+        <%= ge.label :target_weight, "目標重量(kg)" %>
+        <%= ge.number_field :target_weight, step: 0.1, placeholder: '目標重量を入力' %>
+        <%= ge.label :repetitions, "回数" %>
+        <%= ge.number_field :repetitions, placeholder: '目標回数を入力' %>
+      </div>
+    <% end %>
+  </div>
+  <button type="button" id="add-goal-exercise">セットの追加</button>
+
+  <div class="actions">
+    <%= form.submit "保存する" %>
+  </div>
+<% end %>
+
+<%= link_to '戻る', goals_path %>
+
+<%= javascript_tag do %>
+document.addEventListener('turbo:load', function() {
+  const container = document.getElementById('goal-exercises-container');
+  let index = document.querySelectorAll('.goal-exercise-row').length;
+  const exercises = <%= Exercise.all.collect { |e| [e.id, e.name] }.to_json.html_safe %>;
+
+  document.getElementById('add-goal-exercise').addEventListener('click', function() {
+    let selectHTML = '<select name="goal[goal_exercises_attributes][' + index + '][exercise_id]" placeholder="種目を選択">';
+    selectHTML += '<option value="">種目を選択</option>';
+    exercises.forEach(function(exercise) {
+      selectHTML += '<option value="' + exercise[0] + '">' + exercise[1] + '</option>';
+    });
+    selectHTML += '</select>';
+
+    const newExerciseHTML = `
+      <div class="goal-exercise-row">
+        <label>種目名</label>
+        ` + selectHTML + `
+        <label>目標重量(kg)</label>
+        <input type="number" name="goal[goal_exercises_attributes][${index}][target_weight]" step="0.1" placeholder="目標重量を入力">
+        <label>回数</label>
+        <input type="number" name="goal[goal_exercises_attributes][${index}][repetitions]" placeholder="目標回数を入力">
+      </div>
+    `;
+    container.insertAdjacentHTML('beforeend', newExerciseHTML);
+    index++;
+  });
+});
 <% end %>

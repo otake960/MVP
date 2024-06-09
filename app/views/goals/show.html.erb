@@ -1,24 +1,15 @@
-<h1>Goal Details</h1>
+<h1>目標の詳細</h1>
 
-<p>
-  <strong>Description:</strong>
-  <%= @goal.description %>
-</p>
+<ul>
+  <% @goal.goal_exercises.each do |ge| %>
+    <li>
+      種目名: <%= ge.exercise.name %>,
+      目標重量: <%= ge.target_weight %>kg,
+      回数: <%= ge.repetitions %>回
+    </li>
+  <% end %>
+</ul>
 
-<p>
-  <strong>Start Date:</strong>
-  <%= @goal.start_date %>
-</p>
-
-<p>
-  <strong>End Date:</strong>
-  <%= @goal.end_date %>
-</p>
-
-<p>
-  <strong>Status:</strong>
-  <%= @goal.status %>
-</p>
-
-<%= link_to 'Edit', edit_goal_path(@goal) %> |
-<%= link_to 'Back to Goals', goals_path %>
+<%= link_to '編集', edit_goal_path(@goal), class: "btn btn-secondary" %>
+<%= button_to '削除', goal_path(@goal), method: :delete, data: { confirm: 'この目標を削除してよろしいですか？' }, class: "btn btn-danger" %>
+<%= link_to '目標一覧に戻る', goals_path, class: "btn btn-link" %>

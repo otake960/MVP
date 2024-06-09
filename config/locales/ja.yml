@@ -165,3 +165,12 @@ ja:
       not_saved:
         one: エラーが発生したため %{resource} は保存されませんでした。
         other: "%{count} 件のエラーが発生したため %{resource} は保存されませんでした。"
+  goals:
+    created_successfully: "目標が正常に作成されました。"
+    updated_successfully: "目標が正常に更新されました。"
+    destroy_success: "目標が正常に削除されました。"
+  date:
+    order:
+      - :year
+      - :month
+      - :day
