@@ -16,13 +16,13 @@ class TrainingSessionsController < ApplicationController
     end
   
     def create
-      puts "Current user: #{current_user.inspect}"  # 現在のユーザー情報をログに出力
       @training_session = current_user.training_sessions.new(training_session_params)
     
       if @training_session.save
+        check_goals(@training_session)
         redirect_to @training_session, notice: 'トレーニングセッションが正常に作成されました。'
       else
-        puts @training_session.errors.full_messages  # 保存に失敗した場合のエラーメッセージをログに出力
+        puts @training_session.errors.full_messages
         flash.now[:alert] = @training_session.errors.full_messages
         render :new
       end
@@ -32,11 +32,11 @@ class TrainingSessionsController < ApplicationController
     end
   
     def update
-      if @training_session.update(training_session_params)
+      if @training_session.update(training_sesses)
+        flash.now[:alert] = @training_session.erroion_params
         redirect_to @training_session, notice: 'トレーニングセッションが正常に更新されました。'
       else
-        puts @training_session.errors.full_messages  # 更新に失敗した場合のエラーメッセージをログに出力
-        flash.now[:alert] = @training_session.errors.full_messages
+        puts @training_session.errors.full_messagrs.full_messages
         render :edit
       end
     end
@@ -64,5 +64,23 @@ class TrainingSessionsController < ApplicationController
       unless @sessions.exists?
         redirect_to training_sessions_path, alert: "No sessions found on this date."
       end
+    end
+
+    def check_goals(session)
+      session.session_exercises.each do |exercise|
+        current_user.goals.each do |goal|
+          goal.goal_exercises.each do |goal_exercise|
+            if exercise.name == goal_exercise.exercise.name && exercise.weight >= goal_exercise.target_weight
+              goal_exercise.update(achieved: true)
+            end
+          end
+          goal.update_achievement
+        end
+      end
+    end
+    
+    def reward_user(goal)
+      # 報酬のロジックをここに実装
+      puts "Reward given for goal: #{goal.id}"
     end
   end

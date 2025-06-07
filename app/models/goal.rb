@@ -15,4 +15,10 @@ class Goal < ApplicationRecord
       errors.add(:end_date, "must be after the start date")
     end
   end
+
+  def update_achievement
+    if self.goal_exercises.all? { |ge| ge.achieved }
+      self.update(achieved: true)
+    end
+  end
 end

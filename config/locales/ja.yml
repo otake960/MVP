@@ -51,6 +51,8 @@ ja:
             reps:
               blank: 回数を入力してください。
               not_a_number: 回数は数値で入力してください。
+            exercise:
+              required: "運動項目は必須です"
   devise:
     confirmations:
       confirmed: メールアドレスが確認できました。
