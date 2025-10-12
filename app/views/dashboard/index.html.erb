@@ -1,51 +1,61 @@
-<h1>FitTracker Dashboard</h1>
+<h1><%= t('dashboard.title') %></h1>
 
 <div class="dashboard">
 
   <div class="user-info">
-    <h2>Welcome, <%= current_user.name %>!</h2>
-    <p>Today's date: <%= Date.today.strftime('%Y-%m-%d') %></p>
+    <% if current_user %>
+      <h2><%= t('dashboard.welcome', name: (current_user.name.presence || 'ユーザー')) %></h2>
+    <% else %>
+      <h2><%= t('dashboard.welcome_guest') %></h2>
+    <% end %>
+    <p><%= t('dashboard.today') %>: <%= l(Date.today) %></p>
   </div>
 
   <div class="new-session">
-    <h2>Add New Training Session</h2>
+    <h2><%= t('dashboard.add_new_session') %></h2>
     <%= form_with(model: @training_session, local: true) do |form| %>
       <div class="field">
-        <%= form.label :exercise %>
+        <%= form.label :exercise, t('dashboard.form.exercise') %>
         <%= form.text_field :exercise %>
       </div>
       <div class="field">
-        <%= form.label :weight %>
+        <%= form.label :weight, t('dashboard.form.weight') %>
         <%= form.number_field :weight %>
       </div>
       <div class="field">
-        <%= form.label :reps %>
+        <%= form.label :reps, t('dashboard.form.reps') %>
         <%= form.number_field :reps %>
       </div>
       <div class="actions">
-        <%= form.submit 'Add Session' %>
+        <%= form.submit t('dashboard.form.add_session_button') %>
       </div>
     <% end %>
   </div>
 
   <div class="training-records">
-    <h2>Your Training Records</h2>
+    <h2><%= t('dashboard.records.title') %></h2>
     <table>
       <thead>
         <tr>
-          <th>Date</th>
-          <th>Exercise</th>
-          <th>Weight</th>
-          <th>Reps</th>
+          <th><%= t('dashboard.records.date') %></th>
+          <th><%= t('dashboard.records.exercise') %></th>
+          <th><%= t('dashboard.records.weight') %></th>
+          <th><%= t('dashboard.records.reps') %></th>
         </tr>
       </thead>
       <tbody>
-        <% @training_sessions.each do |session| %>
+        <% if @training_sessions.present? %>
+          <% @training_sessions.each do |session| %>
+            <tr>
+              <td><%= l(session.created_at.to_date) %></td>
+              <td><%= session.exercise %></td>
+              <td><%= session.weight %></td>
+              <td><%= session.reps %></td>
+            </tr>
+          <% end %>
+        <% else %>
           <tr>
-            <td><%= session.created_at.strftime('%Y-%m-%d') %></td>
-            <td><%= session.exercise %></td>
-            <td><%= session.weight %></td>
-            <td><%= session.reps %></td>
+            <td colspan="4"><%= t('dashboard.records.empty') %></td>
           </tr>
         <% end %>
       </tbody>
@@ -53,10 +63,10 @@
   </div>
 
   <div class="statistics">
-    <h2>Your Progress</h2>
-    <p>Total sessions: <%= @training_sessions.count %></p>
-    <p>Total weight lifted: <%= @training_sessions.sum(:weight) %> kg</p>
-    <p>Average reps per session: <%= @training_sessions.average(:reps).to_f.round(2) %></p>
+    <h2><%= t('dashboard.stats.title') %></h2>
+    <p><%= t('dashboard.stats.total_sessions', count: @training_sessions.count) %></p>
+    <p><%= t('dashboard.stats.total_weight',  kg: @training_sessions.sum(:weight)) %></p>
+    <p><%= t('dashboard.stats.avg_reps',      avg: @training_sessions.average(:reps).to_f.round(2)) %></p>
   </div>
 </div>
 
