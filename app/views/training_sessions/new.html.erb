@@ -1,6 +1,6 @@
 <h1>トレーニング記録</h1>
 
-<%= form_with(model: @training_session, local: true, data: { turbo: false }, html: {id: 'training-session-form'}) do |form| %>
+<%= form_with(model: @training_session, local: true, data: { turbo: false }, html: { id: 'training-session-form' }) do |form| %>
   <div class="col-md-10 col-lg-8 mx-auto">
     <%= render 'shared/error_messages', object: @training_session %>
 
@@ -9,37 +9,48 @@
       <%= form.date_field :date %>
     </div>
 
+
     <h3>エクササイズ</h3>
-    <div id="exercises-container">
-      <% @training_session.session_exercises.each_with_index do |session_exercise, i| %>
-        <div class="exercise-row" data-index="<%= i %>">
-          <%= form.label :name, "種目 #{i + 1}" %>
-          <%= form.collection_select :name, Exercise.all, :name, :name, { prompt: "種目を選択" }, { name: "training_session[session_exercises_attributes][#{i}][name]" } %>
-          <%= form.label :weight, "重量" %>
-          <%= form.number_field :weight, name: "training_session[session_exercises_attributes][#{i}][weight]", placeholder: "重量(kg)" %>
-          <%= form.label :reps, "回数" %>
-          <%= form.number_field :reps, name: "training_session[session_exercises_attributes][#{i}][reps]", placeholder: "回数" %>
-        </div>
-      <% end %>
+<div id="exercises-container">
+  <%= form.fields_for :session_exercises do |se| %>
+    <div class="exercise-row" data-index="0">
+      <%= se.label :exercise_id, "種目 1" %>
+      <%= se.collection_select :exercise_id, @exercises, :id, :name, { prompt: "種目を選択" } %>
+
+      <%= se.label :weight, "重量" %>
+      <%= se.number_field :weight, step: 0.5, placeholder: "重量(kg)" %>
+
+      <%= se.label :reps, "回数" %>
+      <%= se.number_field :reps, placeholder: "回数" %>
     </div>
+  <% end %>
+</div>
+
+
     <button type="button" id="add-exercise">エクササイズを追加</button>
 
     <div class="actions">
       <%= form.submit "保存" %>
     </div>
-  <% end %>
-  <%= link_to '戻る', training_sessions_path %>
+  </div>
+<% end %>
+
+<%= link_to '戻る', training_sessions_path %>
 
 <%= javascript_tag do %>
 document.addEventListener('turbo:load', function() {
   const container = document.getElementById('exercises-container');
   let index = <%= @training_session.session_exercises.size %>;
-  const exercises = <%= Exercise.all.collect { |e| [e.name, e.name] }.to_json.html_safe %>;
+
+  // JS 側も [表示名, ID] にする（送るのは ID）
+  const exercises = <%= Exercise.all.collect { |e| [e.name, e.id] }.to_json.html_safe %>;
 
   document.getElementById('add-exercise').addEventListener('click', function() {
-    let selectHTML = '<select name="training_session[session_exercises_attributes][' + index + '][name]" placeholder="種目を選択">';
+    // name → exercise_id に変更
+    let selectHTML = '<select name="training_session[session_exercises_attributes][' + index + '][exercise_id]" placeholder="種目を選択">';
     selectHTML += '<option value="">種目を選択</option>';
     exercises.forEach(function(exercise) {
+      // exercise[0] = 表示名, exercise[1] = ID
       selectHTML += '<option value="' + exercise[1] + '">' + exercise[0] + '</option>';
     });
     selectHTML += '</select>';
@@ -47,9 +58,9 @@ document.addEventListener('turbo:load', function() {
     const newExerciseHTML = `
       <div class="exercise-row" data-index="${index}">
         <label>種目 ${index + 1}</label>
-        ` + selectHTML + `
+        ${selectHTML}
         <label>重量</label>
-        <input type="number" name="training_session[session_exercises_attributes][${index}][weight]" placeholder="重量(kg)">
+        <input type="number" step="0.5" name="training_session[session_exercises_attributes][${index}][weight]" placeholder="重量(kg)">
         <label>回数</label>
         <input type="number" name="training_session[session_exercises_attributes][${index}][reps]" placeholder="回数">
       </div>
