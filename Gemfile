@@ -41,3 +41,4 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+gem "ruby-lsp", "~> 0.26.1", :group => :development
