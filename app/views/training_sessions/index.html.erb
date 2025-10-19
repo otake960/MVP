@@ -1,11 +1,12 @@
-<h1>トレーニング履歴</h1>
-<%= link_to 'トレーニング記録', new_training_session_path %>
-<ul>
-  <% @training_sessions.each do |session| %>
-    <li>
-      <%= link_to session.date, training_session_path(session) %>
-      <%= link_to '編集', edit_training_session_path(session) %>
-      <%= link_to '削除', training_session_path(session), method: :delete, data: { confirm: 'Are you sure?' } %>
-    </li>
-  <% end %>
-</ul>
+<h1>記録一覧</h1>
+<p><%= link_to "新規記録", new_training_session_path %></p>
+
+<% if @training_sessions.present? %>
+  <ul>
+    <% @training_sessions.each do |ts| %>
+      <li><%= link_to (ts.date || ts.created_at.to_date), training_session_path(ts) %></li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>記録がありません。</p>
+<% end %>

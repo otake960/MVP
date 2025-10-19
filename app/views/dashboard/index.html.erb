@@ -1,95 +1,27 @@
-<h1><%= t('dashboard.title') %></h1>
+<h1>Dashboard</h1>
 
-<div class="dashboard">
+<nav style="margin: 12px 0;">
+  <%= link_to "記録一覧", training_sessions_path %> |
+  <%= link_to "新規記録", new_training_session_path %> |
+  <%= link_to "ログアウト", destroy_user_session_path, data: { turbo_method: :delete } %>
+</nav>
 
-  <div class="user-info">
-    <% if current_user %>
-      <h2><%= t('dashboard.welcome', name: (current_user.name.presence || 'ユーザー')) %></h2>
-    <% else %>
-      <h2><%= t('dashboard.welcome_guest') %></h2>
+<h2>最近の記録</h2>
+<% if @training_sessions.present? %>
+  <ul>
+    <% @training_sessions.each do |ts| %>
+      <li>
+        <%= link_to (ts.date || ts.created_at.to_date), training_session_path(ts) %>
+        <%# 明細を出したくなったら:
+        # <ul>
+        #   <% ts.session_exercises.includes(:exercise).each do |se| %>
+        #     <li><%= [se.try(:exercise)&.name || se.name, se.weight, se.reps].compact.join(" / ") %></li>
+        #   <% end %>
+        # </ul>
+        %>
+      </li>
     <% end %>
-    <p><%= t('dashboard.today') %>: <%= l(Date.today) %></p>
-  </div>
-
-  <div class="new-session">
-    <h2><%= t('dashboard.add_new_session') %></h2>
-    <%= form_with(model: @training_session, local: true) do |form| %>
-      <div class="field">
-        <%= form.label :exercise, t('dashboard.form.exercise') %>
-        <%= form.text_field :exercise %>
-      </div>
-      <div class="field">
-        <%= form.label :weight, t('dashboard.form.weight') %>
-        <%= form.number_field :weight %>
-      </div>
-      <div class="field">
-        <%= form.label :reps, t('dashboard.form.reps') %>
-        <%= form.number_field :reps %>
-      </div>
-      <div class="actions">
-        <%= form.submit t('dashboard.form.add_session_button') %>
-      </div>
-    <% end %>
-  </div>
-
-  <div class="training-records">
-    <h2><%= t('dashboard.records.title') %></h2>
-    <table>
-      <thead>
-        <tr>
-          <th><%= t('dashboard.records.date') %></th>
-          <th><%= t('dashboard.records.exercise') %></th>
-          <th><%= t('dashboard.records.weight') %></th>
-          <th><%= t('dashboard.records.reps') %></th>
-        </tr>
-      </thead>
-      <tbody>
-        <% if @training_sessions.present? %>
-          <% @training_sessions.each do |session| %>
-            <tr>
-              <td><%= l(session.created_at.to_date) %></td>
-              <td><%= session.exercise %></td>
-              <td><%= session.weight %></td>
-              <td><%= session.reps %></td>
-            </tr>
-          <% end %>
-        <% else %>
-          <tr>
-            <td colspan="4"><%= t('dashboard.records.empty') %></td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="statistics">
-    <h2><%= t('dashboard.stats.title') %></h2>
-    <p><%= t('dashboard.stats.total_sessions', count: @training_sessions.count) %></p>
-    <p><%= t('dashboard.stats.total_weight',  kg: @training_sessions.sum(:weight)) %></p>
-    <p><%= t('dashboard.stats.avg_reps',      avg: @training_sessions.average(:reps).to_f.round(2)) %></p>
-  </div>
-</div>
-
-<style>
-  .dashboard {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-  .user-info, .new-session, .training-records, .statistics {
-    border: 1px solid #ccc;
-    padding: 20px;
-    border-radius: 10px;
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  table, th, td {
-    border: 1px solid black;
-  }
-  th, td {
-    padding: 10px;
-    text-align: left;
-  }
-</style>
+  </ul>
+<% else %>
+  <p>まだ記録がありません。</p>
+<% end %>
