@@ -1,0 +1,49 @@
+<div data-nested-form-row style="display:flex;gap:8px;margin:6px 0;align-items:flex-end;">
+  <div>
+    <%= f.label :exercise_id, "種目" %><br>
+    <%= f.collection_select :exercise_id, Exercise.order(:name), :id, :name, include_blank: true %>
+  </div>
+  <div>
+    <%= f.label :weight, "重さ(kg)" %><br>
+    <%= f.number_field :weight, step: 0.5, min: 0 %>
+  </div>
+  <div>
+    <%= f.label :reps, "回数" %><br>
+    <%= f.number_field :reps, step: 1, min: 0 %>
+  </div>
+  <%= f.hidden_field :_destroy %>
+  <button type="button" data-action="nested-form#remove" style="margin-left:8px;">削除</button>
+</div>
+ERB'
+docker compose exec -T web bash -lc 'cat > app/views/training_sessions/new.html.erb' <<'ERB'
+<h1>新規トレーニング記録</h1>
+<%= render "shared/error_messages", object: @training_session %>
+
+<%= form_with model: @training_session, data: { controller: "nested-form" } do |f| %>
+  <div style="margin:8px 0;">
+    <%= f.label :date, "日付" %><br>
+    <%= f.date_field :date %>
+  </div>
+
+  <h3>種目</h3>
+  <div data-nested-form-target="list">
+    <%= f.fields_for :session_exercises do |se| %>
+      <%= render "session_exercise_fields", f: se %>
+    <% end %>
+  </div>
+
+  <template data-nested-form-target="template">
+    <%= f.fields_for :session_exercises, SessionExercise.new, child_index: "NEW_RECORD" do |se| %>
+      <%= render "session_exercise_fields", f: se %>
+    <% end %>
+  </template>
+
+  <div style="margin-top:12px; display:flex; gap:8px;">
+    <button type="button" data-action="nested-form#add">行を追加</button>
+    <%= f.submit "保存" %>
+  </div>
+<% end %>
+
+<p style="margin-top:8px;"><%= link_to "一覧に戻る", training_sessions_path %></p>
+ERB'
+docker compose exec web bash -lc 'bin/rails r "Rails.application.reloader.reload!; Rails.application.reload_routes!; puts :reloaded"'
