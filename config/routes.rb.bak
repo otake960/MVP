@@ -12,6 +12,10 @@ Rails.application.routes.draw do
   resources :training_sessions do
     collection do
       get 'sessions_on_date/:date', to: 'training_sessions#sessions_on_date', as: 'sessions_on_date'
+      get '/patients/:id', to: 'patients#show'
+    end
+    member do
+      post 'edit', to: 'training_sessions#update' 
     end
   end
 end
